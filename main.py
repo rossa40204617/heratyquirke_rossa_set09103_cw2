@@ -23,6 +23,41 @@ def init_db():
 def home():
   return render_template('base.html')
 
-@app.route('/login/')
+@app.route('/login/', methods=['POST'])
 def login():
-  return render_template('login.html')
+  return "login" 
+
+@app.route('/register/', methods=['POST'])
+def register_user():
+  add_new_user(request.form)
+
+
+def add_new_user(request):
+  
+  username = request['username']
+  user_email = request['user_email']
+  user_password = request['user_password']
+  
+  db = get_db()
+  db.cursor().execute('insert into users (username, user_email, user_password) VALUES (?,?,?)', (username, user_email, user_password)) 
+  db.commit()
+  
+@app.route('/db/')
+def db():
+
+  db = get_db()
+  
+  db.cursor().execute("INSERT INTO users (username, user_email, user_password) VALUES (?,?,?)", ("username", "email", "password"))
+  db.commit()
+  
+  page = []
+  page.append('<html><ul>')
+  sql = "SELECT rowid, * FROM users ORDER BY username" 
+  for row in db.cursor().execute(sql):
+    page.append('<li >') 
+    page.append(str(row))
+    page.append('</li >')
+  page.append('</ul><html>')
+  return ''.join(page)
+
+
