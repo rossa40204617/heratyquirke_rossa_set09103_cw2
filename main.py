@@ -108,6 +108,11 @@ def db():
   page.append('</ul><html>')
   return ''.join(page)
 
+@app.route('/admin_editor/')
+@requires_admin
+def admin_editor():
+  return render_template('admin_editor.html')
+
 @app.route('/admin_editor/add_booking_ad/', methods=['GET', 'POST'])
 @requires_admin
 def add_booking_ad():

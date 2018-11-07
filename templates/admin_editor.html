@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block header %} 
+  <h2>{% block title %}Admin Editor{% endblock %}</h2>
+{% endblock %}
+
+{% block content %}
+
+<a href="{{ url_for('add_booking_ad') }}" class="btn btn-success" role="button">Add New Booking Ad</a>
+</br>
+</br>
+<a href="{{ url_for('remove_booking_ad') }}" class="btn btn-danger" role="button">Remove Booking Ad</a>
+
+{% endblock %}
+
