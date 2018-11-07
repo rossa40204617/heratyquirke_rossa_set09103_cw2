@@ -118,11 +118,12 @@ def add_booking_ad():
 
   return render_template('add_booking_ad.html')
 
-@app.route('/admin_editor/remove_booking_ad/')
+@app.route('/admin_editor/remove_booking_ad/', methods=['GET', 'POST'])
 @requires_admin
 def remove_booking_ad():
    
   if request.method == 'POST':
+    booking_ad_id = request.form['booking_ad_id']
     booking_manager.remove_booking_ad(booking_ad_id)
   
   return render_template('remove_booking_ad.html')

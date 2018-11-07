@@ -16,6 +16,6 @@ def add_booking_ad(request, image):
 def remove_booking_ad(ad_id):
 
   db = get_db()
-  db.cursor.execute('DELETE FROM bookings_ads WHERE booking_ad_id=?', (ad_id,))
+  db.cursor().execute('DELETE FROM booking_ads WHERE booking_ad_id=?', (ad_id,))
 
   db.commit()
