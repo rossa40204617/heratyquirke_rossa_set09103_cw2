@@ -16,9 +16,12 @@ CREATE TABLE IF NOT EXISTS bookings (
     FOREIGN KEY (booking_destination_id) REFERENCES destinations (destination_id)
 );
 
-CREATE TABLE IF NOT EXISTS destinations (
-    destination_id INTEGER PRIMARY KEY,
-    destination_name TEXT,
-    destination_journey_time INTEGER
+CREATE TABLE IF NOT EXISTS booking_ads (
+    booking_ad_id INTEGER PRIMARY KEY,
+    booking_destination TEXT,
+    booking_description TEXT,
+    booking_journey_time TEXT,
+    spaces_available INTEGER,
+    image TEXT
 );
 

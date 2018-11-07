@@ -1,27 +1,11 @@
-from flask import Flask, g, render_template, session, url_for, request, redirect
+from flask import Flask, render_template, session, url_for, request, redirect
 from functools import wraps
-import sqlite3
+from database import get_db, init_db
+import booking_manager
 import bcrypt
 
 app = Flask(__name__)
 app.secret_key = 'super duper secret key'
-
-
-db_location = 'var/booking.db'
-
-def get_db():
-    db = getattr(g, 'db', None)
-    if db is None:
-      db = sqlite3.connect(db_location)
-      g.db = db
-    return db
-
-def init_db():
-    with app.app_context():
-        db = get_db()
-        with app.open_resource('schema.sql', mode='r') as f:
-            db.cursor().executescript(f.read())
-        db.commit()
 
 @app.route('/')
 def home():
@@ -30,12 +14,19 @@ def home():
 @app.route('/logout/')
 def logout():
   session['logged_in'] = False
+  session['user'] = None
+  session['admin'] = False
   return redirect(url_for('.home'))
   
 @app.route('/login/', methods=['POST'])
 def login():
   if login_user(request.form):
     session['logged_in'] = True
+    email = request.form['user_email']
+    session['user'] = get_username(email)
+    if email == 'admin':
+      session['admin'] = True
+    
   return redirect(url_for('.home'))
 
 def login_user(request):
@@ -51,11 +42,19 @@ def verify_user(email, password):
   cur.execute("SELECT user_password FROM users WHERE user_email=?", (email,))
  
   hashed_password = cur.fetchone()[0]
-  
+    
   if hashed_password == bcrypt.hashpw(password.encode('utf-8'), hashed_password.encode('utf-8')):
     return True
   else:
     return False
+
+def get_username(email):
+  db = get_db()
+  cur = db.cursor()
+  
+  cur.execute("SELECT username FROM users WHERE user_email=?", (email,))
+  
+  return cur.fetchone()[0]
   
 @app.route('/register/', methods=['POST'])
 def register_user():
@@ -84,6 +83,15 @@ def requires_login(f):
     return f(*args, **kwargs)
   return decorated
   
+def requires_admin(f):
+  @wraps(f)
+  def decorated(*args, **kwargs):
+    status = session.get('admin', False)
+    if not status:
+      return redirect(url_for('.home'))
+    return f(*args, **kwargs)
+  return decorated
+
 @app.route('/db/')
 @requires_login
 def db():
@@ -92,13 +100,32 @@ def db():
   
   page = []
   page.append('<html><ul>')
-  sql = "SELECT rowid, * FROM users ORDER BY username" 
+  sql = "SELECT rowid, * FROM booking_ads ORDER BY booking_ad_id" 
   for row in db.cursor().execute(sql):
     page.append('<li >') 
     page.append(str(row))
     page.append('</li >')
   page.append('</ul><html>')
   return ''.join(page)
+
+@app.route('/admin_editor/add_booking_ad/', methods=['GET', 'POST'])
+@requires_admin
+def add_booking_ad():
+   
+  if request.method == 'POST':
+    image = request.files['image']  
+    booking_manager.add_booking_ad(request.form, image)
+
+  return render_template('add_booking_ad.html')
+
+@app.route('/admin_editor/remove_booking_ad/')
+@requires_admin
+def remove_booking_ad():
+   
+  if request.method == 'POST':
+    booking_manager.remove_booking_ad(booking_ad_id)
+  
+  return render_template('remove_booking_ad.html')
 
 if __name__ == "__main__":
   app.run(host="0.0.0.0", debug=True)

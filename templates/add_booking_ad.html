@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+
+{% block header %} 
+  <h2 class="text-center">{% block title %}Add new booking ad{% endblock %}</h2>
+{% endblock %}
+
+
+{% block content %}
+<form class="form-horizontal" action="/admin_editor/add_booking_ad/" method="post" enctype="multipart/form-data" >
+  <div class="form-group">
+    <label class="control-label col-sm-2" for="booking_destination">Booking destination:</label>
+    <div class="col-sm-10">
+      <input type="text" class="form-control" id="booking_destination" name="booking_destination" placeholder="e.g 'Mars'"required />
+    </div>
+  </div>
+  <div class="form-group">
+    <label class="control-label col-sm-2" for="spaces_available">Spaces available:</label>
+    <div class="col-sm-10">
+      <input type="text" class="form-control" id="spaces_available" name="spaces_available" placeholder="e.g '500'"required />
+    </div>
+  </div>
+  <div class="form-group">
+    <label class="control-label col-sm-2" for="journey_time">Journey time:</label>
+    <div class="col-sm-10">
+      <input type="text" class="form-control" id="journey_time" name="journey_time" placeholder="e.g '2 months'"required />
+    </div>
+  </div>
+  <div class="form-group">
+    <label class="control-label col-sm-2" for="image">Image:</label>
+    <div class="col-sm-10">
+      <input type="file" class="form-control-file"  id="image" name="image"  />
+    </div>
+  </div>
+  <div class="form-group">
+    <label class="control-label col-sm-2" for="info">Description:</label>
+    <div class="col-sm-10">
+      <textarea class=form-control" rows="6"  cols="125" id="description" name="booking_description" placeholder="e.g The colony on Mars is the largest of all human outposts in the system, you'll be right at home with Earth-like gravity"  required /></textarea>
+    </div>
+  </div>  
+  <div class="form-group">
+    <div class="col-sm-offset-2 col-sm-10">
+      <button type="submit" class="btn btn-success">Submit</button>
+    </div>
+  </div>
+</form>
+
+{% endblock %}
+
