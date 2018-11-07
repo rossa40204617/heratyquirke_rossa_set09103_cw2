@@ -9,7 +9,7 @@ app.secret_key = 'super duper secret key'
 
 @app.route('/')
 def home():
-  return render_template('base.html')
+  return render_template('home_page.html')
 
 @app.route('/logout/')
 def logout():
