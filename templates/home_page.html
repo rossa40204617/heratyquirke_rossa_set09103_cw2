@@ -2,9 +2,38 @@
 
 {% block content %}
 
+<style>
+
+.title {
+    position: absolute;
+    top: 10%; 
+    left: 18%;
+    color:yellow;
+}
+
+.title-content {
+    position: absolute;
+    top: 16%;
+    left: 9%;
+    color:yellow;
+}
+
+.instruction {
+    position: absolute;
+    top: 18%;
+    left: 6%;
+    color: yellow;
+}
+
+</style>
 
 <div class="image">
-<img src="{{ url_for('static', filename='img/solar_system.jpg') }}" usemap="#system-map"/>
+<img src="{{ url_for('static', filename='img/solar_system.jpg') }}" style="position:relative;" usemap="#system-map"/>
+
+<h2 class=title>Welcome to SolarStart!</h2>
+<h4 class=title-content>With Earth nearing inhabitability it's a great time to find your new home among the stars!</h4> 
+
+<h3 class=instruction> Click on a body in the Solar System to view Colony spaces there or <a href="{{ url_for("colony_ads_index", location="all") }}">View All</a> </h3>
 
 <map name="system-map">
     <area alt="mars" title="Mars" href="{{ url_for("colony_ads_index", location="mars") }}" coords="870,351,39" shape="circle">
@@ -14,9 +43,9 @@
     <area alt="uranus" title="Uranus" href="{{ url_for("colony_ads_index", location="uranus") }}" coords="1204,201,34" shape="circle">
     <area alt="neptune" title="Neptune" href="{{ url_for("colony_ads_index", location="neptune") }}" coords="1280,163,32" shape="circle">
     <area alt="moon" title="Moon" href="{{ url_for("colony_ads_index", location="moon") }}" coords="784,301,14" shape="circle">
-    <area alt="earth" title="Earth" href="home_page" coords="759,394,71" shape="circle">
+    <area alt="earth" title="Earth" href="{{ url_for("home")  }}" coords="759,394,71" shape="circle">
     <area alt="saturn" title="Saturn" href="{{ url_for("colony_ads_index", location="saturn") }}" coords="993,290,1061,308,1129,298,1160,278,1170,250,1163,220,1107,206,1071,205,1031,213,984,247,986,237,982,271" shape="poly">
-    <area target="" alt="belt" title="Asteroidd Belt" href="{{ url_for("colony_ads_index", location="asteroid_belt") }}" coords="1153,439,1127,469,1088,516,1178,476,1204,439,1213,403,1208,384,1177,380,1153,403" shape="poly">
+    <area target="" alt="belt" title="Asteroid Belt" href="{{ url_for("colony_ads_index", location="asteroid_belt") }}" coords="1153,439,1127,469,1088,516,1178,476,1204,439,1213,403,1208,384,1177,380,1153,403" shape="poly">
 </map>
 </div>
 {% endblock %}

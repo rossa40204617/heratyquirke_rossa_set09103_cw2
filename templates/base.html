@@ -1,7 +1,9 @@
 <html>
   <head>
     <title>{% block title %}SolarStart {% endblock %}</title>
-      <link href ="{{ url_for('static', filename='css/bootstrap.min.css') }}" rel="stylesheet" />
+      <link href ="{{ url_for('static', filename="css/bootstrap.min.css") }}" rel="stylesheet" />
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+      <script src="{{ url_for('static', filename="js/bootstrap.min.js") }}"></script>
     <style>
       body{ padding-top: 50px; 
         }     
@@ -23,9 +25,9 @@
               Admin Editor
             </a>
             <ul class="dropdown-menu">
-              <li><a class="dropdown-item" href="{{ url_for('admin_editor') }}">Admin Editor Index</a></li>
-              <li><a class="dropdown-item" href="{{ url_for('add_booking_ad') }}">Add Booking Ad</a></li>
-              <li><a class="dropdown-item" href="{{ url_for('remove_booking_ad') }}">Remove Booking Ad</a></li>
+              <li><a class="dropdown-item" href="{{ url_for('admin_editor') }}">Admin Editor Tools</a></li>
+              <li><a class="dropdown-item" href="{{ url_for('add_colony_ad') }}">Add Colony Ad</a></li>
+              <li><a class="dropdown-item" href="{{ url_for('remove_colony_ad') }}">Remove Colony Ad</a></li>
             </ul>
             </li>
           {% endif %}

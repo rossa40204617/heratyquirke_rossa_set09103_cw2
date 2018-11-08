@@ -1,7 +1,7 @@
 from flask import Flask, render_template, session, url_for, request, redirect
 from functools import wraps
 from database import get_db, init_db
-import colony_manager_manager
+import colony_manager
 import bcrypt
 
 app = Flask(__name__)
@@ -10,6 +10,11 @@ app.secret_key = 'super duper secret key'
 @app.route('/')
 def home():
   return render_template('home_page.html')
+
+
+@app.route('/test/')
+def test():
+  return render_template('test.html')
 
 @app.route('/logout/')
 def logout():
@@ -115,7 +120,7 @@ def admin_editor():
 
 @app.route('/admin_editor/add_colony_ad/', methods=['GET', 'POST'])
 @requires_admin
-def add_booking_ad():
+def add_colony_ad():
    
   if request.method == 'POST':
     image = request.files['image']  
@@ -133,10 +138,11 @@ def remove_colony_ad():
   
   return render_template('remove_colony_ad.html')
 
-@app.route('/colony_manager_ads/<string:location>/')
-def colony_manager_ads_index(location):
+@app.route('/colony_ads/<string:location>/')
+def colony_ads_index(location):
+  colony_ads = colony_manager.get_colony_ads(location)
   
-  return location
+  return render_template('colony_ad_index.html', colony_ads = colony_ads)
 
 
 if __name__ == "__main__":
