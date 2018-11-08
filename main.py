@@ -1,7 +1,7 @@
 from flask import Flask, render_template, session, url_for, request, redirect
 from functools import wraps
 from database import get_db, init_db
-import booking_manager
+import colony_manager_manager
 import bcrypt
 
 app = Flask(__name__)
@@ -113,25 +113,31 @@ def db():
 def admin_editor():
   return render_template('admin_editor.html')
 
-@app.route('/admin_editor/add_booking_ad/', methods=['GET', 'POST'])
+@app.route('/admin_editor/add_colony_ad/', methods=['GET', 'POST'])
 @requires_admin
 def add_booking_ad():
    
   if request.method == 'POST':
     image = request.files['image']  
-    booking_manager.add_booking_ad(request.form, image)
+    colony_manager.add_colony_ad(request.form, image)
 
-  return render_template('add_booking_ad.html')
+  return render_template('add_colony_ad.html')
 
-@app.route('/admin_editor/remove_booking_ad/', methods=['GET', 'POST'])
+@app.route('/admin_editor/remove_colony_ad/', methods=['GET', 'POST'])
 @requires_admin
-def remove_booking_ad():
+def remove_colony_ad():
    
   if request.method == 'POST':
-    booking_ad_id = request.form['booking_ad_id']
-    booking_manager.remove_booking_ad(booking_ad_id)
+    colony_ad_id = request.form['booking_ad_id']
+    colony_manager.remove_colony_ad(colony_ad_id)
   
-  return render_template('remove_booking_ad.html')
+  return render_template('remove_colony_ad.html')
+
+@app.route('/colony_manager_ads/<string:location>/')
+def colony_manager_ads_index(location):
+  
+  return location
+
 
 if __name__ == "__main__":
   app.run(host="0.0.0.0", debug=True)
