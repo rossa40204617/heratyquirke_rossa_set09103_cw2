@@ -1,9 +1,9 @@
-class Colony_Ad
+class Colony_Ad:
   
-  def __init__(self, name, colony_id, location, description, journey_time, cost, spaces_available, image) 
+  def __init__(self, uid, name, location, description, journey_time, cost, spaces_available, image): 
+	self.uid = uid	
 	self.name = name 
-	self.colony_id = colony_id
-	self.location = location 
+        self.location = location 
 	self.description = description
 	self.journey_time = journey_time
 	self.cost = cost

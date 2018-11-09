@@ -3,7 +3,7 @@
 
 {% block header %}
 <div align="center">
-  <h1 style="color:yellow">{% block title %}Colony Spaces in {{ location }}{% endblock %}</h1>
+  <h1 style="color:yellow">{% block title %}Colony Spaces in {{colony_ads[0].location }}{% endblock %}</h1>
 </div>
 {% endblock %}
 
@@ -13,7 +13,7 @@
 <style>
 
 .description {
-  width: 450px;
+  width: 550px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -29,18 +29,18 @@
 <div class="media">
   <div class="media-left">
     <a href="#">
-      <img src="{{ url_for('static', filename='img/solar_system.jpg') }}" width=450 height=325 class="media-object" alt="colony_image">
+      <img src="{{ url_for('static', filename=ad.image) }}" width=450 height=335 class="media-object" alt="colony_image">
     </a>
   </div>
   <div class="media-body">
-    <h2 class="media-heading">Name{{name}}</h2>
-    <h3>Spaces available: {{spaces_available}} </h3>
-    <h3>£ {{cost}} per person </h3>
-    <h3>Journey time: {{journey_time}} </h3>
+    <h2 class="media-heading"><a href="#">{{ad.name}}</a></h2>
+    <h3>Spaces available: {{ad.spaces_available}} </h3>
+    <h3>£{{ad.cost}} per person </h3>
+    <h3>Journey time: {{ad.journey_time}} days</h3>
     </br>
-    <h4 class=description>{{description}} asdkhashduyagshdagskjhdgkahsgdjhagsjhdgajhsgd </h4>
+    <h4 class=description>{{ad.description}}</h4>
     </br>
-    <a href="#" class="btn btn-warning btn-block" role="button">Book your spot</a>
+    <a href="{{ url_for('book_colony', colony_id=ad.uid) }}" class="btn btn-warning btn-block" role="button">Book your spot</a>
     <a href="#" class="btn btn-info btn-block" role="button">View more info</a>
   </div>
 </div>

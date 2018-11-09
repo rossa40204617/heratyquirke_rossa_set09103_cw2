@@ -1,4 +1,5 @@
 from database import get_db
+from colony_ad import Colony_Ad
 
 def add_colony_ad(request, image):
   
@@ -8,10 +9,13 @@ def add_colony_ad(request, image):
   spaces_available = request['spaces_available']
   colony_journey_time = request['journey_time']
   cost = request['cost']
-  
+
+  image_path = 'img/' + image.filename
+  image.save('static/' + image_path)
+    
   db = get_db()
 
-  db.cursor().execute('INSERT into colony_ads (colony_name, colony_location, colony_description, colony_journey_time, spaces_available, cost, image) VALUES (?,?,?,?,?,?,?)', (colony_name, colony_location, colony_description, colony_journey_time, spaces_available, cost, image.filename))  
+  db.cursor().execute('INSERT into colony_ads (colony_name, colony_location, colony_description, colony_journey_time, spaces_available, cost, image) VALUES (?,?,?,?,?,?,?)', (colony_name, colony_location, colony_description, colony_journey_time, spaces_available, cost, image_path))  
   
   db.commit()
 
@@ -27,13 +31,26 @@ def get_colony_ads(location):
   db = get_db()
   cur = db.cursor()
   
-  cur.execute("SELECT *  FROM colony_ads")
+  if location == 'all':
+    cur.execute("SELECT * FROM colony_ads") 
+  else:
+    cur.execute("SELECT *  FROM colony_ads WHERE colony_location=? COLLATE NOCASE", (location,))
 
-  colony_ads = cur.fetchall()[0]
+  database_entries = cur.fetchall()
+  
+  print(database_entries)
+  colony_ads = convert_db_entries_to_colony_ads(database_entries)
+  
+  return colony_ads
+
+def convert_db_entries_to_colony_ads(entries):
+  
+  colony_ads = [Colony_Ad(
+                 entry[0], entry[1], 
+                 entry[2], entry[3],
+                 entry[4], entry[5],
+                 entry[6], entry[7]
+               ) for entry in entries]
+   
+  return colony_ads
  
-  print(colony_ads) 
-  print(type(colony_ads))
-  print(colony_ads[1])
-
-  return []
-

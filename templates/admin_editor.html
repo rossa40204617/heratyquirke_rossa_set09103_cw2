@@ -1,15 +1,21 @@
 {% extends 'base.html' %}
 
-{% block header %} 
-  <h2>{% block title %}Admin Editor{% endblock %}</h2>
+{% block header %}
+<div align="center"> 
+  <h2 style="color:yellow">{% block title %}Admin Editor{% endblock %}</h2>
+</div>
 {% endblock %}
 
 {% block content %}
+<body background="{{ url_for('static', filename='img/star_background.png') }}">
 
-<a href="{{ url_for('add_colony_ad') }}" class="btn btn-success" role="button">Add New Colony Ad</a>
+
+<div align="center">
+<a href="{{ url_for('add_colony_ad') }}" style="color:black" class="btn btn-success" role="button">Add New Colony Ad</a>
 </br>
 </br>
-<a href="{{ url_for('remove_colony_ad') }}" class="btn btn-danger" role="button">Remove Colony Ad</a>
-
+<a href="{{ url_for('remove_colony_ad') }}" style="color:black" class="btn btn-danger" role="button">Remove Colony Ad</a>
+</div>
+</body>
 {% endblock %}
 
