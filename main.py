@@ -137,29 +137,38 @@ def colony_ad(location, colony_id):
 @app.route('/booking/colony_id/<int:colony_id>', methods=['GET', 'POST'])
 def book_colony(colony_id):
   if request.method == 'POST':
-    if session['logged_in']:
-      user_id = session['user']['user_id']
-      email = session['user']['user_email'] 
-      username = session['user']['username']
-      
-      total_cost = int(request.form['cost']) * int(request.form['number_of_people'])  
-      
-      booking_manager.create_booking(request.form, user_id, colony_id) 
-    
-      with app.app_context():
-        msg = Message(subject="SolarStart Booking Confirmation", sender=app.config.get("MAIL_USERNAME"), 
-                      recipients=[email], body="This is a booking confirmation for " + username + ". You booking has been processed and is now complete. The total cost comes to: " + str(total_cost) + " credits.")
-        mail.send(msg) 
+    try:
+      if session['logged_in']:
+        user_id = session['user']['user_id']
 
-      return ("Booking complete, a confirmation email has been sent to: " + session['user']['user_email'])  
-    else:
+        booking_manager.create_booking(request.form, user_id, colony_id) 
+        send_confirmation_email(request.form)
+        return render_template('booking_confirmation.html', email=session['user']['user_email'])  
+      else:
+        flash("Please log in to complete your booking")
+    except KeyError:
       flash("Please log in to complete your booking")
 
   colony = colony_manager.get_colony(colony_id) 
      
   return render_template('book_colony.html', colony=colony)
 
-@app.route('/<str:username>/mybookings')
+def send_confirmation_email(request):
+      email = session['user']['user_email'] 
+      username = session['user']['username']
+      
+      total_cost = int(request['cost']) * int(request['number_of_people'])  
+      colony_name = request['colony_name']
+      number_of_people = request['number_of_people']  
+ 
+      with app.app_context():
+        msg = Message(subject="SolarStart Booking Confirmation",
+                      sender=app.config.get("MAIL_USERNAME"), 
+                      recipients=[email])
+        msg.html = render_template('email_confirmation.html', username=username, spaces=number_of_people, total_cost=total_cost, colony_name=colony_name)
+        mail.send(msg) 
+
+@app.route('/<string:username>/mybookings')
 @requires_login
 def view_bookings(username, user_id):
   app.logger.info("User: " + user_id + " requests to view their bookings") 

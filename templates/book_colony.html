@@ -32,6 +32,9 @@
         <input type="hidden" class="form-control" name="cost" value="{{colony.cost}}" required />
       </div>
       <div class="form-group">
+        <input type="hidden" class="form-control" name="colony_name" value="{{colony.name}}" required />
+      </div>
+      <div class="form-group">
       {% with messages = get_flashed_messages() %}
       {% if messages %} 
         {% for message in messages %}
