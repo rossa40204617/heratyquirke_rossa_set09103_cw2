@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% block header %}
+<div align="center">
+  <h2 style="color:yellow">{% block title %}Your Bookings{% endblock %}</h2>
+</div>
+{% endblock %}
+
+{% block content %}
+
+<body background="{{ url_for('static', filename='img/star_background.png') }}">
+
+
+<div align="center">
+<div class="panel panel-default" align="center" style="max-width:40%">
+{% for booking in colony_bookings %}
+<div class="panel-body">
+    <a class="thumbnail fancybox" rel="lightbox" href="#" >
+      <img src="{{ url_for('static', filename='colonies[booking.uid.image') }}" style="max-height:80%" class="img-responsive" />
+      <div class="caption">
+        <h4><b>{{ booking.name }}</b></h4>
+        <p>Booking ID: {{ booking.uid }}</p>
+        <h4>Spaces Booked:{{ booking.spaces }}</h4>
+        <h4>Total Cost: {{ booking.total_cost }}</h4>
+      </div>
+    </a>
+</div>
+{% endfor %}
+</div>
+</div>
+</body>
+{% endblock %}

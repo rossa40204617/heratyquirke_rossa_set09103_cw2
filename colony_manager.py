@@ -38,10 +38,22 @@ def get_colony_ads(location):
 
   database_entries = cur.fetchall()
   
-  print(database_entries)
   colony_ads = convert_db_entries_to_colony_ads(database_entries)
   
   return colony_ads
+
+def get_colony(colony_id):
+  
+  db = get_db()
+  cur = db.cursor()
+  
+  cur.execute("SELECT * FROM colony_ads WHERE colony_ad_id=?", (colony_id,))
+  
+  entry = cur.fetchone()
+ 
+  colony = Colony_Ad(entry[0], entry[1], entry[2], entry[3], entry[4], entry[5], entry[6], entry[7])
+
+  return colony
 
 def convert_db_entries_to_colony_ads(entries):
   
@@ -54,3 +66,5 @@ def convert_db_entries_to_colony_ads(entries):
    
   return colony_ads
  
+
+

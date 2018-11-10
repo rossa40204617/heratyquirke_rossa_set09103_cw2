@@ -10,6 +10,7 @@ CREATE TABLE IF NOT EXISTS bookings (
     colony_id INTEGER,
     booking_owner_id INTEGER,
     number_of_people INTEGER,
+    total_cost INTEGER,
      
     FOREIGN KEY (booking_owner_id) REFERENCES users (user_id)
     FOREIGN KEY (colony_id) REFERENCES destinations (colony_ad_id)

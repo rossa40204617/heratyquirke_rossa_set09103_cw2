@@ -5,7 +5,8 @@ import booking_manager
 import user_manager
 import bcrypt
 
-from flask import Flask, render_template, session, url_for, request, redirect
+from flask import Flask, flash, render_template, session, url_for, request, redirect
+from flask_mail import Mail, Message
 from functools import wraps
 from database import get_db, init_db
 from logging.handlers import RotatingFileHandler
@@ -13,6 +14,18 @@ from flask import Flask, url_for
 
 app = Flask(__name__)
 app.secret_key = 'super duper secret key'
+
+mail_settings = {
+	"MAIL_SERVER": 'smtp.gmail.com',
+  	"MAIL_PORT": 465,
+	"MAIL_USE_TLS": False,
+ 	"MAIL_USE_SSL": True,
+	"MAIL_USERNAME": 'knightlybear@gmail.com',
+ 	"MAIL_PASSWORD": 'bluetack'
+}
+
+app.config.update(mail_settings)
+mail = Mail(app)
 
 @app.route('/')
 def home():
@@ -121,23 +134,36 @@ def colony_ads_index(location):
 def colony_ad(location, colony_id):
   return "booking_info"
 
-@app.route('/book/colony_id/<int:colony_id>', methods=['GET', 'POST'])
+@app.route('/booking/colony_id/<int:colony_id>', methods=['GET', 'POST'])
 def book_colony(colony_id):
   if request.method == 'POST':
-    user_id = session['user']['user_id']
-    booking_manager.create_booking(request, user_id, colony_id)  
-     
-  db = get_db()
-  page = []
-  page.append('<html><ul>')
-  sql = "SELECT  * FROM bookings" 
-  for row in db.cursor().execute(sql):
-    page.append('<li >') 
-    page.append(str(row))
-    page.append('</li >')
-  page.append('</ul><html>')
-  return ''.join(page)
+    if session['logged_in']:
+      user_id = session['user']['user_id']
+      email = session['user']['user_email'] 
+      username = session['user']['username']
+      
+      total_cost = int(request.form['cost']) * int(request.form['number_of_people'])  
+      
+      booking_manager.create_booking(request.form, user_id, colony_id) 
+    
+      with app.app_context():
+        msg = Message(subject="SolarStart Booking Confirmation", sender=app.config.get("MAIL_USERNAME"), 
+                      recipients=[email], body="This is a booking confirmation for " + username + ". You booking has been processed and is now complete. The total cost comes to: " + str(total_cost) + " credits.")
+        mail.send(msg) 
 
+      return ("Booking complete, a confirmation email has been sent to: " + session['user']['user_email'])  
+    else:
+      flash("Please log in to complete your booking")
+
+  colony = colony_manager.get_colony(colony_id) 
+     
+  return render_template('book_colony.html', colony=colony)
+
+@app.route('/<str:username>/mybookings')
+@requires_login
+def view_bookings(username, user_id):
+  app.logger.info("User: " + user_id + " requests to view their bookings") 
+  return render_template('view_bookings.html')
 
 def init(app):
   config = ConfigParser.ConfigParser() 
