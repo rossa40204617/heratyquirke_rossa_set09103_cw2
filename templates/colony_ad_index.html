@@ -23,6 +23,7 @@
 
 <div class="container list-group" align="center">
 
+{% if colony_ads %}
 {% for ad in colony_ads %}
 
 <div class="list-group-item">
@@ -48,7 +49,16 @@
 </div>
 
 {% endfor %}
-
+{% else %}
+<div class="container" align="center">
+  <div class="panel panel-default" style="width:40%" >
+    <div class="panel-body">
+      <img class="img-responsive" src="{{ url_for('static', filename='img/no_entries.png') }}" width="340" alt="no_entries">
+      <h3> Oops, we couldn't find any colonies related to your search! </h3>
+    </div>
+  </div>
+</div>
+{% endif %}
 </div>
 
 </body> 

@@ -28,10 +28,8 @@ def get_bookings_for_user(user_id):
    
    db_entries = cur.fetchall()  
   
-   print(db_entries)
-     
    bookings = convert_db_entries_to_bookings(db_entries)
-  
+
    return bookings
 
 def convert_db_entries_to_bookings(entries):

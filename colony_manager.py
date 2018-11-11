@@ -55,6 +55,19 @@ def get_colony(colony_id):
 
   return colony
 
+def search_colony_ads(name):
+
+  db = get_db()
+  cur = db.cursor()
+  
+  cur.execute("SELECT * FROM colony_ads WHERE colony_name LIKE ?", ('%' + name + '%',))
+  
+  entries = cur.fetchall()
+
+  colony_ads = convert_db_entries_to_colony_ads(entries)
+  
+  return colony_ads
+
 def convert_db_entries_to_colony_ads(entries):
   
   colony_ads = [Colony_Ad(
@@ -65,6 +78,10 @@ def convert_db_entries_to_colony_ads(entries):
                ) for entry in entries]
    
   return colony_ads
- 
+
+def remove_duplicates(seq):
+    seen = set()
+    seen_add = seen.add
+    return [x for x in seq if not (x.uid in seen or seen_add(x.uid))]
 
 

@@ -20,8 +20,8 @@ mail_settings = {
   	"MAIL_PORT": 465,
 	"MAIL_USE_TLS": False,
  	"MAIL_USE_SSL": True,
-	"MAIL_USERNAME": 'knightlybear@gmail.com',
- 	"MAIL_PASSWORD": 'bluetack'
+	"MAIL_USERNAME": 'solarstart.bookings@gmail.com',
+ 	"MAIL_PASSWORD": 'Test123!'
 }
 
 app.config.update(mail_settings)
@@ -140,13 +140,17 @@ def book_colony(colony_id):
     try:
       if session['logged_in']:
         user_id = session['user']['user_id']
-
+        app.logger.info("Create booking for user and write to db")
         booking_manager.create_booking(request.form, user_id, colony_id) 
+        
+        app.logger.info("Send booking confirmation email")
         send_confirmation_email(request.form)
         return render_template('booking_confirmation.html', email=session['user']['user_email'])  
       else:
+        app.logger.info("User not logged in, flashing error message")
         flash("Please log in to complete your booking")
     except KeyError:
+      app.logger.info("KeyError encountered for 'logged_in' session, flashing error message")
       flash("Please log in to complete your booking")
 
   colony = colony_manager.get_colony(colony_id) 
@@ -172,19 +176,32 @@ def send_confirmation_email(request):
 @requires_login
 def view_bookings(username):
   user_id = session['user']['user_id']
-  app.logger.info("User: " + str(user_id) + " requests to view their bookings") 
+  app.logger.info("User: " + str(user_id) + " requests to view their bookings, getting user's bookings") 
+
   bookings = booking_manager.get_bookings_for_user(user_id)
   
-  colonies = set()
+  colonies = []
 
+  app.logger.info("Get colony ads associated with user bookings")
   for booking in bookings:
-    colonies.add(colony_manager.get_colony(booking.colony_id))
- 
-  print("HELLO") 
-  print(colonies)
-  
+    colonies.append(colony_manager.get_colony(booking.colony_id))
 
+  app.logger.info("Remove duplicate colony ads")
+  colonies = colony_manager.remove_duplicates(colonies)
+ 
   return render_template('view_bookings.html', bookings=bookings, colonies=colonies)
+
+@app.route('/results/', methods=['GET', 'POST'])
+def search():
+  if request.method == 'POST':
+    term = request.form['search_term']
+    colony_ads = colony_manager.search_colony_ads(term)
+     
+  return render_template('colony_ad_index.html', colony_ads = colony_ads)
+
+@app.errorhandler(404)
+def page_not_found(error):
+  return render_template('404_error.html'), 404
 
 def init(app):
   config = ConfigParser.ConfigParser() 

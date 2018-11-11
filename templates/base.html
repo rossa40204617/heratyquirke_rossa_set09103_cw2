@@ -30,6 +30,12 @@
             </li>
           {% endif %}
         </ul>
+        <form class="navbar-form navbar-left"  action="{{ url_for('search') }}" method="post" enctype="multipart/form-data">
+          <div class="form-group">
+            <input type="text" class="form-control" name="search_term" placeholder="Search">
+          </div>
+          <button type="submit" class="btn btn-success">Submit</button>
+        </form>
         {% if session['logged_in'] %}
           <ul class="nav navbar-nav navbar-right">
             <li>
@@ -38,7 +44,7 @@
               </span>
             </li>
 	    <li><a href ="{{ url_for('view_bookings', username=session['user']['username']) }}">Your Bookings</a></li>             
-            <li><button type="button" class="btn btn-success navbar-btn navbar-right" data-toggle="modal" data-target="#logoutModal">Log out</button><li>
+            <li><button type="button" class="btn btn-danger navbar-btn navbar-right" data-toggle="modal" data-target="#logoutModal">Log out</button><li>
           </ul>
         {% else %}
           <button type="button" class="btn btn-success navbar-btn navbar-right" data-toggle="modal" data-target="#loginModal">Login</button>

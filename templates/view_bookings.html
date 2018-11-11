@@ -14,9 +14,9 @@
 {% for booking in bookings %}
 <div class="panel-body">
     <a class="thumbnail fancybox" rel="lightbox" href="#" >
-      <img src="{{ url_for('static', filename=colonies[booking.colony_id].image) }}" style="max-height:80%" class="img-responsive" />
+      <img src="{{ url_for('static', filename=colonies[booking.colony_id - 1].image) }}" style="max-height:80%" class="img-responsive" />
       <div class="caption">
-        <h4><b>{{colonies[booking.colony_id].name}} {{colonies}}</b></h4>
+        <h4><b>{{colonies[booking.colony_id -1 ].name}}</b></h4>
         <p>Booking ID: {{ booking.booking_id }}</p>
         <h4>Spaces Booked: {{ booking.number_of_people }}</h4>
         <h4>Total Cost: C${{ booking.total_cost }}</h4>
