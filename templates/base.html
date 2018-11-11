@@ -19,7 +19,7 @@
 	  <li><a href ="{{ url_for('home') }}">Home</a></li>             
           {% if session['admin'] %}
             <li class="dropdown">
-            <a class="dropdown-toggle" id="navbarDropdownMenuLink" href="{{ url_for('admin_editor') }}" data-toggle="dropdown" role="button"  aria-haspopup="true" aria-expanded="false">
+            <a class="dropdown-toggle"  id="navbarDropdownMenuLink" href="{{ url_for('admin_editor') }}" data-toggle="dropdown" role="button"  aria-haspopup="true" aria-expanded="false">
               Admin Editor <span class="caret"></span>
             </a>
             <ul class="dropdown-menu">
@@ -30,7 +30,7 @@
             </li>
           {% endif %}
         </ul>
-        <form class="navbar-form navbar-left"  action="{{ url_for('search') }}" method="post" enctype="multipart/form-data">
+        <form class="navbar-form navbar-left" action="{{ url_for('search') }}" method="post" enctype="multipart/form-data">
           <div class="form-group">
             <input type="text" class="form-control" name="search_term" placeholder="Search">
           </div>
@@ -43,7 +43,7 @@
               <p style="color:white;">Hello {{ session['user']['username'] }}</p>
               </span>
             </li>
-	    <li><a href ="{{ url_for('view_bookings', username=session['user']['username']) }}">Your Bookings</a></li>             
+	    <li><a href="{{ url_for('view_bookings', username=session['user']['username']) }}">Your Bookings</a></li>             
             <li><button type="button" class="btn btn-danger navbar-btn navbar-right" data-toggle="modal" data-target="#logoutModal">Log out</button><li>
           </ul>
         {% else %}

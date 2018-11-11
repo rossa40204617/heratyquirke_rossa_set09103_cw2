@@ -55,12 +55,12 @@ def get_colony(colony_id):
 
   return colony
 
-def search_colony_ads(name):
+def search_colony_ads(term):
 
   db = get_db()
   cur = db.cursor()
   
-  cur.execute("SELECT * FROM colony_ads WHERE colony_name LIKE ?", ('%' + name + '%',))
+  cur.execute("SELECT * FROM colony_ads WHERE (colony_name LIKE ? or colony_location LIKE ?)", ('%' + term + '%', '%' + term + '%'))
   
   entries = cur.fetchall()
 

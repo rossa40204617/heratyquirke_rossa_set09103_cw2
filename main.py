@@ -49,14 +49,18 @@ def logout():
   
 @app.route('/login/', methods=['POST'])
 def login():
-  if user_manager.login_user(request.form):
-    session['logged_in'] = True
-    email = request.form['user_email'] 
-    app.logger.info("User successfully logged in with email: ", email)
-    session['user'] = user_manager.get_user(email).__dict__
+  try:
+    if user_manager.login_user(request.form):
+      session['logged_in'] = True
+      email = request.form['user_email']    
+      session['user'] = user_manager.get_user(email).__dict__
+          
+      app.logger.info("User successfully logged in with email: ", email)
     if email == 'admin':
       app.logger.info("User: '" + session['user']['username'] + "' has Admin permissions")
       session['admin'] = True
+  except:
+    return render_template('login_error.html')  
   return redirect(request.referrer)
    
   
@@ -131,8 +135,9 @@ def colony_ads_index(location):
   return redirect(url_for('.home'))
 
 @app.route('/colony_ads/<string:location>/colony_id/<int:colony_id>')
-def colony_ad(location, colony_id):
-  return "booking_info"
+def view_colony_ad(location, colony_id):
+  colony = colony_manager.get_colony(colony_id)
+  return render_template('view_colony_ad.html', colony=colony)
 
 @app.route('/booking/colony_id/<int:colony_id>', methods=['GET', 'POST'])
 def book_colony(colony_id):
@@ -193,6 +198,7 @@ def view_bookings(username):
 
 @app.route('/results/', methods=['GET', 'POST'])
 def search():
+  colony_ads = []
   if request.method == 'POST':
     term = request.form['search_term']
     colony_ads = colony_manager.search_colony_ads(term)

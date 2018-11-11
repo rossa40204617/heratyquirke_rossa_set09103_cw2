@@ -3,7 +3,7 @@
 
 {% block header %}
 <div align="center">
-  <h1 style="color:yellow">{% block title %}Colony Spaces in {{colony_ads[0].location }}{% endblock %}</h1>
+  <h1 style="color:yellow">{% block title %}View Colony Spaces{% endblock %}</h1>
 </div>
 {% endblock %}
 
@@ -29,7 +29,7 @@
 <div class="list-group-item">
 <div class="media">
   <div class="media-left">
-    <a href="#">
+    <a href="{{ url_for('view_colony_ad', location=ad.location|lower, colony_id=ad.uid) }}">
       <img src="{{ url_for('static', filename=ad.image) }}" width=450 height=335 class="media-object" alt="colony_image">
     </a>
   </div>
@@ -43,7 +43,7 @@
     <h4 class=description>{{ad.description}}</h4>
     </br>
     <a href="{{ url_for('book_colony', colony_id=ad.uid) }}" class="btn btn-warning btn-block" role="button">Book your spot</a>
-    <a href="#" class="btn btn-info btn-block" role="button">View more info</a>
+    <a href="{{ url_for('view_colony_ad', location=ad.location|lower, colony_id=ad.uid) }}" class="btn btn-info btn-block" role="button">View more info</a>
   </div>
 </div>
 </div>
@@ -53,7 +53,7 @@
 <div class="container" align="center">
   <div class="panel panel-default" style="width:40%" >
     <div class="panel-body">
-      <img class="img-responsive" src="{{ url_for('static', filename='img/no_entries.png') }}" width="340" alt="no_entries">
+      <img class="img-responsive" src="{{ url_for('static', filename='img/no_entries.png') }}" alt="no_entries">
       <h3> Oops, we couldn't find any colonies related to your search! </h3>
     </div>
   </div>

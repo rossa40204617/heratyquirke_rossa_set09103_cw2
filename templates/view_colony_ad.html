@@ -1,7 +1,25 @@
 {% extends 'base.html' %}
 
+{% block header %}
+<div align="center">
+  <h1 style="color:yellow">{% block title %}{{colony.name}}{% endblock %}</h1>
+</div>
+{% endblock %}
+
 {% block content %}
-
-
-
+<body background="{{ url_for('static', filename='img/star_background.png') }}">
+<div class="container" align="center">
+  <div class="panel panel-default" style="width:50%">
+    <div class="panel-body">
+      <img class="thumbnail img-responsive" src="{{ url_for('static', filename=colony.image) }}" width="450" alt="colony_image">
+      <p><i> Colony ID: {{colony.uid}} </i></p>
+      <h3> Spaces Available: {{colony.spaces_available}} </h3>
+      <h3> Cost per person: C${{colony.cost}} </h3>
+      <h4> {{colony.description}} </h3>
+      <a href="{{ url_for('book_colony', colony_id=colony.uid) }}" class="btn btn-warning btn-block" role="button">Book your spot now</a>
+      <a href="{{ url_for('colony_ads_index', location=colony.location|lower) }}" class="btn btn-info btn-block" role="button">Go Back</a>
+    </div>
+  </div>
+</div>
+</body>
 {% endblock %}
