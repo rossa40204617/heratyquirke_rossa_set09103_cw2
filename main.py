@@ -170,9 +170,21 @@ def send_confirmation_email(request):
 
 @app.route('/<string:username>/mybookings')
 @requires_login
-def view_bookings(username, user_id):
-  app.logger.info("User: " + user_id + " requests to view their bookings") 
-  return render_template('view_bookings.html')
+def view_bookings(username):
+  user_id = session['user']['user_id']
+  app.logger.info("User: " + str(user_id) + " requests to view their bookings") 
+  bookings = booking_manager.get_bookings_for_user(user_id)
+  
+  colonies = set()
+
+  for booking in bookings:
+    colonies.add(colony_manager.get_colony(booking.colony_id))
+ 
+  print("HELLO") 
+  print(colonies)
+  
+
+  return render_template('view_bookings.html', bookings=bookings, colonies=colonies)
 
 def init(app):
   config = ConfigParser.ConfigParser() 
