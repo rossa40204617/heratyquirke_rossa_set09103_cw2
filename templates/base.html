@@ -3,12 +3,26 @@
     <title>{% block title %}SolarStart {% endblock %}</title>
       <link href ="{{ url_for('static', filename="css/bootstrap.min.css") }}" rel="stylesheet" />
     <style>
-      body{ padding-top: 50px; 
+      body{ padding-top: 83px; 
         }     
-    </style> 
+    </style>
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script>
+    $(document).ready(function() {
+      var availableTerms = [
+        "Colony", "Belt",
+        "Mars", "Neptune",
+        "Jupiter", "Moon",
+        "Saturn", "Venus"
+      ];
+      $( "#search_term" ).autocomplete({ source:availableTerms });
+    });
+    </script>
   </head>
   <body>
-  <nav class="navbar navbar-inverse navbar-fixed-top">
+  <nav class="navbar navbar-inverse navbar-fixed-top" style="padding-top:16px;padding-bottom:7px">
     <div class="container">
       <div class="navbar-header">
           <a class ="navbar-brand" style="color:yellow;" href="{{ url_for('home') }}">SolarStart</a>
@@ -32,7 +46,7 @@
         </ul>
         <form class="navbar-form navbar-left" action="{{ url_for('search') }}" method="post" enctype="multipart/form-data">
           <div class="form-group">
-            <input type="text" class="form-control" name="search_term" placeholder="Search">
+              <input type="text" class="form-control" name="search_term" id="search_term" placeholder="Search">
           </div>
           <button type="submit" class="btn btn-success">Submit</button>
         </form>

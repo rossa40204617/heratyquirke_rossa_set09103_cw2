@@ -28,7 +28,7 @@
 </style>
 
 <div class="image">
-<img src="{{ url_for('static', filename='img/solar_system.jpg') }}" style="position:relative;" usemap="#system-map"/>
+<img src="{{ url_for('static', filename='img/solar_system.jpg') }}" style="position:relative;height:707px;width=1600px;" usemap="#system-map"/>
 
 <h2 class=title>Welcome to SolarStart!</h2>
 <h4 class=title-content>With Earth nearing inhabitability it's a great time to find your new home among the stars!</h4> 
@@ -36,16 +36,16 @@
 <h3 class=instruction> Click on a body in the Solar System to view Colony spaces there or <a href="{{ url_for("colony_ads_index", location="all") }}">View All</a> </h3>
 
 <map name="system-map">
-    <area alt="mars" title="Mars" href="{{ url_for("colony_ads_index", location="mars") }}" coords="870,351,39" shape="circle">
-    <area alt="mercury" title="Mercury" href="{{ url_for("colony_ads_index", location="mercury") }}"  coords="528,502,54" shape="circle">
-    <area alt="venus" title="Venus" href="{{ url_for("colony_ads_index", location="venus") }}" coords="633,450,47" shape="circle">
-    <area alt="jupiter" title="Jupiter" href="{{ url_for("colony_ads_index", location="jupiter") }}" coords="955,316,41" shape="circle">
-    <area alt="uranus" title="Uranus" href="{{ url_for("colony_ads_index", location="uranus") }}" coords="1204,201,34" shape="circle">
-    <area alt="neptune" title="Neptune" href="{{ url_for("colony_ads_index", location="neptune") }}" coords="1280,163,32" shape="circle">
-    <area alt="moon" title="Moon" href="{{ url_for("colony_ads_index", location="moon") }}" coords="784,301,14" shape="circle">
-    <area alt="earth" title="Earth" href="{{ url_for("home")  }}" coords="759,394,71" shape="circle">
-    <area alt="saturn" title="Saturn" href="{{ url_for("colony_ads_index", location="saturn") }}" coords="993,290,1061,308,1129,298,1160,278,1170,250,1163,220,1107,206,1071,205,1031,213,984,247,986,237,982,271" shape="poly">
-    <area target="" alt="belt" title="Asteroid Belt" href="{{ url_for("colony_ads_index", location="belt") }}" coords="1153,439,1127,469,1088,516,1178,476,1204,439,1213,403,1208,384,1177,380,1153,403" shape="poly">
+    <area alt="mars" title="Mars" href="{{ url_for("colony_ads_index", location="mars") }}" coords="870,354,41" shape="circle">
+    <area alt="mercury" title="Mercury" href="{{ url_for("colony_ads_index", location="mercury") }}"  coords="530,501,50" shape="circle">
+    <area alt="venus" title="Venus" href="{{ url_for("colony_ads_index", location="venus") }}" coords="636,450,46" shape="circle">
+    <area alt="jupiter" title="Jupiter" href="{{ url_for("colony_ads_index", location="jupiter") }}" coords="954,312,39" shape="circle">
+    <area alt="uranus" title="Uranus" href="{{ url_for("colony_ads_index", location="uranus") }}" coords="1205,202,36" shape="circle">
+    <area alt="neptune" title="Neptune" href="{{ url_for("colony_ads_index", location="neptune") }}" coords="1279,162,31" shape="circle">
+    <area alt="moon" title="Moon" href="{{ url_for("colony_ads_index", location="moon") }}" coords="784,302,16" shape="circle">
+    <area alt="earth" title="Earth" href="{{ url_for("home")  }}" coords="756,397,72" shape="circle">
+    <area alt="saturn" title="Saturn" href="{{ url_for("colony_ads_index", location="saturn") }}" coords="994,288,1024,304,1064,308,1103,305,1133,296,1151,281,1172,262,1167,232,1151,216,1123,206,1088,202,1047,209,1017,222,993,238,983,263" shape="poly">
+    <area target="" alt="belt" title="Asteroid Belt" href="{{ url_for("colony_ads_index", location="belt") }}" coords="1202,389,1209,419,1190,445,1161,474,1125,501,1081,516,1125,479,1142,458,1160,426,1160,404,1178,392" shape="poly">
 </map>
 </div>
 {% endblock %}

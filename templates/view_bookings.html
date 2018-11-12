@@ -20,12 +20,48 @@
         <p>Booking ID: {{ booking.booking_id }}</p>
         <h4>Spaces Booked: {{ booking.number_of_people }}</h4>
         <h4>Total Cost: C${{ booking.total_cost }}</h4>
-        <a href="{{ url_for('remove_booking', booking_id=booking.booking_id) }}" role="button" class="btn btn-danger btn-block">Cancel Booking</a>
+        <button type="button" class="open-removebookingModal btn btn-danger btn-block" data-id={{booking.booking_id}} data-toggle="modal" data-target="#removebookingModal">Cancel Booking</button>
         <hr class="divider" style="border-color:black"> 
       </div>
 </div>
 {% endfor %}
 </div>
 </div>
+
+<div id="removebookingModal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+     <div class="modal-body">
+       <div class="container">
+         <div class="row">
+           <div class="col-md-6" align="center">
+           <h3>Are you sure you want to cancel this booking? </h3>
+           </div>
+         </div>
+         <div class="row">
+           <div class="col-md-6">
+             <input type="text" name="id" id="id" value=""/>
+             <a href="{{ url_for('remove_booking', booking_id='123') }}" class="btn btn-danger btn-block" style="margin-bottom:10px;" role="button">Yes, cancel this booking</a>
+           </div>
+         </div>
+         <div class="row">
+           <div class="col-md-6">
+             <button type="button" class="btn btn-success btn-block" data-dismiss="modal">No, I want to go to space</button>
+           </div>
+         </div>
+       </div>
+     </div>
+  </div>
+</div>
+
+<script>
+$(document).on("click", ".open-removebookingModal", function () {
+     var bookingId = $(this).data('id');
+     $(".modal-body #id").val( bookingId );
+});
+</script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
 </body>
 {% endblock %}
