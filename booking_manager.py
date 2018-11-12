@@ -9,15 +9,17 @@ def create_booking(request, booking_owner_id, colony_id):
 
   total_cost = int(cost) * int(number_of_people)
 
-  print("DETAILS")
-  print(total_cost)
-  print(number_of_people)
-
   db = get_db() 
   db.cursor().execute('INSERT into bookings (colony_id, booking_owner_id, number_of_people, total_cost) VALUES(?,?,?,?)', (colony_id, booking_owner_id, number_of_people, total_cost))
   db.commit()
   
   update_colony_ad_spaces(colony_id, number_of_people)
+
+def remove_booking(booking_id):
+  
+  db = get_db()
+  db.cursor().execute('DELETE FROM bookings WHERE booking_id=?', (booking_id,))
+  db.commit()
 
 def get_bookings_for_user(user_id):
   

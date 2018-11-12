@@ -177,6 +177,13 @@ def send_confirmation_email(request):
         msg.html = render_template('email_confirmation.html', username=username, spaces=number_of_people, total_cost=total_cost, colony_name=colony_name)
         mail.send(msg) 
 
+@app.route('/remove_booking/<int:booking_id>')
+@requires_login
+def remove_booking(booking_id):
+  booking_manager.remove_booking(booking_id) 
+ 
+  return redirect(request.referrer)
+
 @app.route('/<string:username>/mybookings')
 @requires_login
 def view_bookings(username):
