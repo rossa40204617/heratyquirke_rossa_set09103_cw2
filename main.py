@@ -3,6 +3,7 @@ import logging
 import colony_manager
 import booking_manager
 import user_manager
+import email_client
 import bcrypt
 
 from flask import Flask, flash, render_template, session, url_for, request, redirect
@@ -15,22 +16,9 @@ from flask import Flask, url_for
 app = Flask(__name__)
 app.secret_key = 'super duper secret key'
 
-mail_settings = {
-	"MAIL_SERVER": 'smtp.gmail.com',
-  	"MAIL_PORT": 465,
-	"MAIL_USE_TLS": False,
- 	"MAIL_USE_SSL": True,
-	"MAIL_USERNAME": 'solarstart.bookings@gmail.com',
- 	"MAIL_PASSWORD": 'Test123!'
-}
-
-app.config.update(mail_settings)
-mail = Mail(app)
-
 @app.route('/')
 def home():
   return render_template('home_page.html')
-
 
 @app.route('/test/')
 def test(): 
@@ -59,15 +47,19 @@ def login():
     if email == 'admin':
       app.logger.info("User: '" + session['user']['username'] + "' has Admin permissions")
       session['admin'] = True
-  except:
-    return render_template('login_error.html')  
+  except Exception:
+    flash("Invalid user credentials")
+    return render_template('400_error.html'), 400  
   return redirect(request.referrer)
    
-  
 @app.route('/register/', methods=['POST'])
 def register_user():
-  user_manager.add_new_user(request.form)
-  return redirect(request.referrer)
+  if user_manager.add_new_user(request.form):
+    app.logger.info("New user created")
+    return redirect(request.referrer) 
+  else:
+    app.logger.info("Invalid credentials, could not create new user")
+    return render_template('400_error.html'), 400
 
 def requires_login(f):
   @wraps(f)
@@ -86,22 +78,6 @@ def requires_admin(f):
       return redirect(url_for('.home'))
     return f(*args, **kwargs)
   return decorated
-
-@app.route('/db/')
-@requires_login
-def db():
-
-  db = get_db()
-  
-  page = []
-  page.append('<html><ul>')
-  sql = "SELECT rowid, * FROM booking_ads ORDER BY booking_ad_id" 
-  for row in db.cursor().execute(sql):
-    page.append('<li >') 
-    page.append(str(row))
-    page.append('</li >')
-  page.append('</ul><html>')
-  return ''.join(page)
 
 @app.route('/admin_editor/')
 @requires_admin
@@ -145,44 +121,32 @@ def book_colony(colony_id):
     try:
       if session['logged_in']:
         user_id = session['user']['user_id']
+        email = session['user']['user_email']
+        username = session['user']['username']
+        
         app.logger.info("Create booking for user and write to db")
         booking_manager.create_booking(request.form, user_id, colony_id) 
         
         app.logger.info("Send booking confirmation email")
-        send_confirmation_email(request.form)
-        return render_template('booking_confirmation.html', email=session['user']['user_email'])  
+        email_client.send_confirmation_email(request.form, email, username)
+        return render_template('booking_confirmation.html', email=email)  
       else:
         app.logger.info("User not logged in, flashing error message")
         flash("Please log in to complete your booking")
-    except KeyError:
-      app.logger.info("KeyError encountered for 'logged_in' session, flashing error message")
-      flash("Please log in to complete your booking")
+    except Exeception, e:
+      app.logger.error("Unexpected error encountered in creating booking: " + str(e))
+      flash("Unexpected error, please try logging in to complete your booking")
 
   colony = colony_manager.get_colony(colony_id) 
      
   return render_template('book_colony.html', colony=colony)
-
-def send_confirmation_email(request):
-      email = session['user']['user_email'] 
-      username = session['user']['username']
-      
-      total_cost = int(request['cost']) * int(request['number_of_people'])  
-      colony_name = request['colony_name']
-      number_of_people = request['number_of_people']  
- 
-      with app.app_context():
-        msg = Message(subject="SolarStart Booking Confirmation",
-                      sender=app.config.get("MAIL_USERNAME"), 
-                      recipients=[email])
-        msg.html = render_template('email_confirmation.html', username=username, spaces=number_of_people, total_cost=total_cost, colony_name=colony_name)
-        mail.send(msg) 
 
 @app.route('/remove_booking', methods=['POST'])
 @requires_login
 def remove_booking():
   booking_manager.remove_booking(request.form['id']) 
  
-  return redirect(url_for('view_bookings', username=session['user']['username']))
+  return redirect(request.referrer)
 
 @app.route('/<string:username>/mybookings')
 @requires_login
@@ -216,6 +180,10 @@ def search():
     colony_ads = colony_manager.search_colony_ads(term)
      
   return render_template('colony_ad_index.html', colony_ads = colony_ads)
+
+@app.errorhandler(400)
+def invalid_credentials(error):
+  return render_template('400_error.html'), 400
 
 @app.errorhandler(404)
 def page_not_found(error):
