@@ -48,7 +48,7 @@ def login():
       app.logger.info("User: '" + session['user']['username'] + "' has Admin permissions")
       session['admin'] = True
   except Exception:
-    flash("Invalid user credentials")
+    flash("Invalid email or password")
     return render_template('400_error.html'), 400  
   return redirect(request.referrer)
    
@@ -188,6 +188,10 @@ def invalid_credentials(error):
 @app.errorhandler(404)
 def page_not_found(error):
   return render_template('404_error.html'), 404
+
+@app.errorhandler(405)
+def not_allowed(error):
+  return render_template('405_error.html'), 405
 
 def init(app):
   config = ConfigParser.ConfigParser() 
