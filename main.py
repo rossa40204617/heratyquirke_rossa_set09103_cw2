@@ -177,12 +177,12 @@ def send_confirmation_email(request):
         msg.html = render_template('email_confirmation.html', username=username, spaces=number_of_people, total_cost=total_cost, colony_name=colony_name)
         mail.send(msg) 
 
-@app.route('/remove_booking/<int:booking_id>')
+@app.route('/remove_booking', methods=['POST'])
 @requires_login
-def remove_booking(booking_id):
-  booking_manager.remove_booking(booking_id) 
+def remove_booking():
+  booking_manager.remove_booking(request.form['id']) 
  
-  return redirect(request.referrer)
+  return redirect(url_for('view_bookings', username=session['user']['username']))
 
 @app.route('/<string:username>/mybookings')
 @requires_login
@@ -200,8 +200,13 @@ def view_bookings(username):
 
   app.logger.info("Remove duplicate colony ads")
   colonies = colony_manager.remove_duplicates(colonies)
+  
+  colony_dict = {}
+    
+  for colony in colonies:
+    colony_dict[colony.uid] = colony
  
-  return render_template('view_bookings.html', bookings=bookings, colonies=colonies)
+  return render_template('view_bookings.html', bookings=bookings, colonies=colony_dict)
 
 @app.route('/results/', methods=['GET', 'POST'])
 def search():
