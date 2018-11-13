@@ -8,25 +8,20 @@ import bcrypt
 
 from flask import Flask, flash, render_template, session, url_for, request, redirect
 from flask_mail import Mail, Message
+from flask_socketio import SocketIO, send
 from functools import wraps
 from database import get_db, init_db
 from logging.handlers import RotatingFileHandler
 from flask import Flask, url_for
 
 app = Flask(__name__)
+app.config['SECRET_KEY'] = 'secret!'
 app.secret_key = 'super duper secret key'
+socketio = SocketIO(app)
 
 @app.route('/')
 def home():
   return render_template('home_page.html')
-
-@app.route('/test/')
-def test(): 
-  app.logger.info("info")
-  app.logger.debug("debug")
-  app.logger.warn("warn")
-  app.logger.error("error")
-  return render_template('test.html')
 
 @app.route('/logout/')
 def logout():
@@ -52,14 +47,16 @@ def login():
     return render_template('400_error.html'), 400  
   return redirect(request.referrer)
    
-@app.route('/register/', methods=['POST'])
+@app.route('/register/', methods=['POST', 'GET'])
 def register_user():
-  if user_manager.add_new_user(request.form):
-    app.logger.info("New user created")
-    return redirect(request.referrer) 
-  else:
-    app.logger.info("Invalid credentials, could not create new user")
-    return render_template('400_error.html'), 400
+  if request.method == 'POST':
+    if user_manager.add_new_user(request.form):
+      app.logger.info("New user created")
+      return redirect(request.referrer) 
+    else:
+      app.logger.info("Invalid credentials, could not create new user")
+      return render_template('400_error.html'), 400
+  return redirect(request.referrer)
 
 def requires_login(f):
   @wraps(f)
@@ -90,6 +87,7 @@ def add_colony_ad():
   if request.method == 'POST':
     image = request.files['image']  
     colony_manager.add_colony_ad(request.form, image)
+    flash("New Colony Ad created") 
 
   return render_template('add_colony_ad.html')
 
@@ -99,13 +97,13 @@ def remove_colony_ad():
   if request.method == 'POST':
     colony_ad_id = request.form['colony_ad_id']
     colony_manager.remove_colony_ad(colony_ad_id)
+    flash("Colony successfully removed")
   
   return render_template('remove_colony_ad.html')
 
 @app.route('/colony_ads/<string:location>/')
 def colony_ads_index(location):
   colony_ads = colony_manager.get_colony_ads(location)
-  
   if colony_ads:   
     return render_template('colony_ad_index.html', colony_ads = colony_ads)
   return redirect(url_for('.home'))
@@ -181,6 +179,29 @@ def search():
      
   return render_template('colony_ad_index.html', colony_ads = colony_ads)
 
+@app.route('/colony_chat')
+@requires_login
+def colony_chat():
+  return render_template('colony_chat.html', username=session['user']['username'])
+
+@socketio.on('message', namespace='/colony_chat')
+def handle_message(msg):
+  username = session['user']['username']
+  app.logger.info('Message sent: ' + msg + ', by User: ' + username)
+  send(('<b>' + username + '</b>: ' + msg), broadcast=True)
+
+@socketio.on('connect', namespace='/colony_chat')
+def handle_connect():
+  username = session['user']['username']
+  app.logger.info('User: ' + username + ' connected to the chat') 
+  send(('<b style="color:green">' + username + ' has connected</b>'), broadcast=True)
+
+@socketio.on('disconnect', namespace='/colony_chat')
+def handle_disconnect():
+  username = session['user']['username']
+  app.logger.info('User: ' + username + ' disconnected from the chat')
+  send(('<b style="color:red">' + username + ' has disconnected</b>'), broadcast=True)
+
 @app.errorhandler(400)
 def invalid_credentials(error):
   return render_template('400_error.html'), 400
@@ -227,9 +248,5 @@ if __name__ == "__main__":
   init(app)
   logs(app)
 
-  app.run(
-      host=app.config['ip_address'],
-      post=int(app.config['port']))
-
-
+  socketio.run(app, debug=True)
 
