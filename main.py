@@ -116,7 +116,6 @@ def view_colony_ad(location, colony_id):
 @app.route('/booking/colony_id/<int:colony_id>', methods=['GET', 'POST'])
 def book_colony(colony_id):
   if request.method == 'POST':
-    try:
       if session['logged_in']:
         user_id = session['user']['user_id']
         email = session['user']['user_email']
@@ -131,9 +130,8 @@ def book_colony(colony_id):
       else:
         app.logger.info("User not logged in, flashing error message")
         flash("Please log in to complete your booking")
-    except Exeception, e:
-      app.logger.error("Unexpected error encountered in creating booking: " + str(e))
-      flash("Unexpected error, please try logging in to complete your booking")
+        app.logger.error("Unexpected error encountered in creating booking: " + str(e))
+        flash("Unexpected error, please try logging in to complete your booking")
 
   colony = colony_manager.get_colony(colony_id) 
      

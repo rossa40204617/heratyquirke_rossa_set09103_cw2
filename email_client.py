@@ -21,8 +21,8 @@ def send_confirmation_email(request, email, username):
       number_of_people = request['number_of_people']
 
       with app.app_context():
-        msg = message(subject="solarstart booking confirmation",
-                      sender=app.config.get("mail_username"),
+        msg = Message(subject="solarstart booking confirmation",
+                      sender=app.config.get("MAIL_USERNAME"),
                       recipients=[email])
         msg.html = render_template('email_confirmation.html', username=username, spaces=number_of_people, total_cost=total_cost, colony_name=colony_name)
         mail.send(msg)
