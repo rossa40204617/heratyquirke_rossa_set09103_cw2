@@ -12,7 +12,8 @@ from flask_socketio import SocketIO, send
 from functools import wraps
 from database import get_db, init_db
 from logging.handlers import RotatingFileHandler
-from flask import Flask, url_for
+from smtplib import SMTPRecipientsRefused
+
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'secret!'
@@ -118,6 +119,7 @@ def view_colony_ad(location, colony_id):
 @app.route('/booking/colony_id/<int:colony_id>', methods=['GET', 'POST'])
 def book_colony(colony_id):
   if request.method == 'POST':
+    try:
       if session['logged_in']:
         user_id = session['user']['user_id']
         email = session['user']['user_email']
@@ -132,9 +134,10 @@ def book_colony(colony_id):
       else:
         app.logger.info("User not logged in, flashing error message")
         flash("Please log in to complete your booking")
-        app.logger.error("Unexpected error encountered in creating booking: " + str(e))
-        flash("Unexpected error, please try logging in to complete your booking")
-
+    except SMTPRecipientsRefused:
+      app.logger.error("Could not send email to: " + email);
+      flash("Sorry, looks like we couldn't reach your email addres, please contact a member of staff for help "
+     + " - your booking may still have been created.")   
   colony = colony_manager.get_colony(colony_id) 
      
   return render_template('book_colony.html', colony=colony)
