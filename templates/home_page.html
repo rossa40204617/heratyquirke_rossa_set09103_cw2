@@ -25,6 +25,12 @@
     color: yellow;
 }
 
+.colony_chat {
+    position: absolute;
+    top: 35%;
+    left: 15%;
+    color: yellow;
+}
 </style>
 
 <div class="image">
@@ -34,6 +40,12 @@
 <h4 class=title-content>With Earth nearing inhabitability it's a great time to find your new home among the stars!</h4> 
 
 <h3 class=instruction> Click on a body in the Solar System to view Colony spaces there or <a href="{{ url_for("colony_ads_index", location="all") }}">View All</a> </h3>
+
+<div class=colony_chat align=center>
+  <h3>Colony Chat</h3>
+  <p>Log in to chat to fellow colonisers!</p>
+  <a href="{{ url_for('colony_chat') }}" role="button" class="btn btn-primary">Start Chatting</a>
+</div>
 
 <map name="system-map">
     <area alt="mars" title="Mars" href="{{ url_for("colony_ads_index", location="mars") }}" coords="870,354,41" shape="circle">
@@ -48,5 +60,6 @@
     <area target="" alt="belt" title="Asteroid Belt" href="{{ url_for("colony_ads_index", location="belt") }}" coords="1202,389,1209,419,1190,445,1161,474,1125,501,1081,516,1125,479,1142,458,1160,426,1160,404,1178,392" shape="poly">
 </map>
 </div>
+
 {% endblock %}
 

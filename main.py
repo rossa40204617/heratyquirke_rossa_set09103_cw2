@@ -62,8 +62,9 @@ def requires_login(f):
   @wraps(f)
   def decorated(*args, **kwargs):
     status= session.get('logged_in', False)
-    if not status: 
-      return redirect(url_for('.home'))
+    if not status:
+      flash("login") 
+      return redirect(request.referrer)
     return f(*args, **kwargs)
   return decorated
   
@@ -106,6 +107,7 @@ def colony_ads_index(location):
   colony_ads = colony_manager.get_colony_ads(location)
   if colony_ads:   
     return render_template('colony_ad_index.html', colony_ads = colony_ads)
+  flash("coming_soon")
   return redirect(url_for('.home'))
 
 @app.route('/colony_ads/<string:location>/colony_id/<int:colony_id>')
@@ -140,8 +142,9 @@ def book_colony(colony_id):
 @app.route('/remove_booking', methods=['POST'])
 @requires_login
 def remove_booking():
-  booking_manager.remove_booking(request.form['id']) 
- 
+  booking_id = request.form['id']
+  booking_manager.remove_booking(booking_id) 
+  app.logger.info("Booking deleted. ID: " + booking_id) 
   return redirect(request.referrer)
 
 @app.route('/<string:username>/mybookings')
@@ -168,13 +171,10 @@ def view_bookings(username):
  
   return render_template('view_bookings.html', bookings=bookings, colonies=colony_dict)
 
-@app.route('/results/', methods=['GET', 'POST'])
+@app.route('/colonies/')
 def search():
-  colony_ads = []
-  if request.method == 'POST':
-    term = request.form['search_term']
-    colony_ads = colony_manager.search_colony_ads(term)
-     
+  search_term = request.args.get('search_term')
+  colony_ads = colony_manager.search_colony_ads(search_term)    
   return render_template('colony_ad_index.html', colony_ads = colony_ads)
 
 @app.route('/colony_chat')
