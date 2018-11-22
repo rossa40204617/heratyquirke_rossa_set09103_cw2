@@ -38,7 +38,7 @@ def login():
       email = request.form['user_email']    
       session['user'] = user_manager.get_user(email).__dict__
           
-      app.logger.info("User successfully logged in with email: ", email)
+      app.logger.info("User successfully logged in with email: " + email)
     if email == 'admin':
       app.logger.info("User: '" + session['user']['username'] + "' has Admin permissions")
       session['admin'] = True
