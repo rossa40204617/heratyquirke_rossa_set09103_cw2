@@ -29,7 +29,7 @@ def logout():
   session['logged_in'] = False
   session['admin'] = False  
   session.pop('user', None) 
-  return redirect(request.referrer)
+  return redirect(url_for('home'))
   
 @app.route('/login/', methods=['POST'])
 def login():
@@ -183,7 +183,7 @@ def search():
 @app.route('/colony_chat')
 @requires_login
 def colony_chat():
-  return render_template('colony_chat.html', username=session['user']['username'])
+    return render_template('colony_chat.html', username=session['user']['username'])
 
 @socketio.on('message', namespace='/colony_chat')
 def handle_message(msg):
