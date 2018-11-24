@@ -2,4 +2,6 @@
 
 2nd Coursework for Advanced Web Technologies Module at Napier University
 
-Login details: to login with Admin permissions user enter the email as: 'admin' and the password as: 'root'
+Login details: to login with Admin permissions
+# Use the email: 'admin' and the password: 'root'
+
