@@ -35,7 +35,8 @@
   </div>
   <div class="media-body">
     <h2 class="media-heading"><a href="{{ url_for('book_colony', colony_id=ad.uid) }}">{{ad.name}}</a> </h2> 
-    <p><i><font size="2">Colony ID: {{ad.uid}}</font></i></p> 
+    <p><i><font size="2">Colony ID: {{ad.uid}}</font></i></p>
+    <h3>Location: <a href="{{  url_for('colony_ads_index', location=ad.location|lower) }}">{{ad.location}}</a></h3> 
     <h3>Spaces available: {{ad.spaces_available}}</h3>
     <h3>C$ {{ad.cost}} per person </h3>
     <h3>Journey time: {{ad.journey_time}} days</h3>
