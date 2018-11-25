@@ -24,14 +24,14 @@ socketio = SocketIO(app)
 def home():
   return render_template('home_page.html')
 
-@app.route('/logout/')
+@app.route('/logout')
 def logout():
   session['logged_in'] = False
   session['admin'] = False  
   session.pop('user', None) 
   return redirect(url_for('home'))
   
-@app.route('/login/', methods=['POST'])
+@app.route('/login', methods=['POST'])
 def login():
   try:
     if user_manager.login_user(request.form):
@@ -48,7 +48,7 @@ def login():
     return render_template('400_error.html'), 400  
   return redirect(request.referrer)
    
-@app.route('/register/', methods=['POST', 'GET'])
+@app.route('/register', methods=['POST', 'GET'])
 def register_user():
   if request.method == 'POST':
     if user_manager.add_new_user(request.form):
@@ -116,7 +116,7 @@ def view_colony_ad(location, colony_id):
   colony = colony_manager.get_colony(colony_id)
   return render_template('view_colony_ad.html', colony=colony)
 
-@app.route('/booking/colony_id/<int:colony_id>', methods=['GET', 'POST'])
+@app.route('/colony_ads/create_booking/colony_id/<int:colony_id>', methods=['GET', 'POST'])
 def book_colony(colony_id):
   if request.method == 'POST':
     try:
@@ -230,7 +230,6 @@ def init(app):
     app.config['log_file'] = config.get("logging", "name") 
     app.config['log_location'] = config.get("logging", "location")
     app.config['log_level'] = config.get("logging", "level") 
-
   except:   
     print "Error reading logging configuration file at: ", config_location
 
