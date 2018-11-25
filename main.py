@@ -116,7 +116,7 @@ def view_colony_ad(location, colony_id):
   colony = colony_manager.get_colony(colony_id)
   return render_template('view_colony_ad.html', colony=colony)
 
-@app.route('/colony_ads/create_booking/colony_id/<int:colony_id>', methods=['GET', 'POST'])
+@app.route('/colony_ads/colony_id/<int:colony_id>/create_booking', methods=['GET', 'POST'])
 def book_colony(colony_id):
   if request.method == 'POST':
     try:
